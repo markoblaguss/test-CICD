@@ -1,3 +1,5 @@
+// Test
+
 const assert = require('assert');
 const { hello } = require('./index');
 

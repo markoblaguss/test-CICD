@@ -28,3 +28,23 @@ jobs:
       - name: Pipeline success message
         if: success()
         run: echo "Pipeline successful!"
+
+docker-build:
+    runs-on: ubuntu-latest
+    needs: build-and-test
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Log in to GitHub Container Registry
+        run: |
+          echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u "${{ secrets.GHCR_USERNAME }}" --password-stdin
+
+      - name: Build Docker image
+        run: |
+          docker build -t ghcr.io/${{ secrets.GHCR_USERNAME }}/hello-ci:latest .
+
+      - name: Push Docker image
+        run: |
+          docker push ghcr.io/${{ secrets.GHCR_USERNAME }}/hello-ci:latest
